@@ -36,17 +36,24 @@ if ( ! function_exists( 'localSyncGetAuthHeader' ) ) {
 if ( ! function_exists( 'localSyncVerifyToken' ) ) {
     function localSyncVerifyToken( $result, $request ) {
         $route = $request->get_route();
-        // Only validate the specific local-sync route
-        if ( false === strpos( $route, '/local-sync/v1/sync' ) ) {
+        // Only validate the specific local-sync route (exact match or sub-paths)
+        if ( 1 !== preg_match( '#^/local-sync/v1/sync(?:/.*)?$#', $route ) ) {
             return $result;
         }
 
         $error = null;
         $auth   = localSyncGetAuthHeader();
+
+        // Optional debug flag (env or constant) to enable error logging for auth failures
+        $debug = getenv( 'WP_LOCAL_SYNC_DEBUG' );
+        if ( ! $debug && defined( 'WP_LOCAL_SYNC_DEBUG' ) ) {
+            $debug = WP_LOCAL_SYNC_DEBUG;
+        }
+
         if ( ! $auth || ! preg_match( '/Bearer\s+(.*)$/i', $auth, $m ) ) {
             $error = new WP_Error( 'rest_forbidden', 'Missing or invalid Authorization header', array( 'status' => 401 ) );
         } else {
-            $token = $m[1];
+            $token = trim( $m[1] );
             $expected = getenv( 'WP_LOCAL_SYNC_SECRET' );
             if ( ! $expected && defined( 'WP_LOCAL_SYNC_SECRET' ) ) {
                 $expected = WP_LOCAL_SYNC_SECRET;
@@ -54,6 +61,11 @@ if ( ! function_exists( 'localSyncVerifyToken' ) ) {
             if ( ! $expected || ! hash_equals( $expected, $token ) ) {
                 $error = new WP_Error( 'rest_forbidden', 'Invalid token', array( 'status' => 401 ) );
             }
+        }
+
+        if ( $error && $debug ) {
+            $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
+            error_log( sprintf( 'local-sync auth failed: route=%s, has_auth=%s, ip=%s', $route, $auth ? 'yes' : 'no', $ip ) );
         }
 
         return $error ? $error : $result;
