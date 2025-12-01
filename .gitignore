@@ -1,0 +1,6 @@
+# Ignore local wp-config with secrets
+wp-config.php
+
+# Ignore local env files
+.env
+.env.local
