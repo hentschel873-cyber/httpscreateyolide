@@ -4,3 +4,4 @@ wp-config.php
 # Ignore local env files
 .env
 .env.local
+scripts/deep_secret_scan_report.txt
