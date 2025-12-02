@@ -1,0 +1,45 @@
+[30-Nov-2025 21:26:57 UTC] Automatic updates starting...
+[30-Nov-2025 21:26:58 UTC] Automatic updates complete.
+[30-Nov-2025 22:12:23 UTC] PHP Warning:  wp_update_themes(): Ein unerwarteter Fehler ist aufgetreten. Es scheint etwas bei WordPress.org oder mit dieser Serverkonfiguration nicht zu stimmen. Sollte das Problem weiter bestehen, nutze bitte die <a href="https://de.wordpress.org/support/">Support-Foren</a>. (WordPress konnte keine sichere Verbindung zu WordPress.org herstellen. Bitte kontaktiere deinen Server-Administrator.) in /wordpress/wp-includes/functions.php on line 6131
+[01-Dec-2025 01:55:47 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 11 malformed database schema (_wp_sqlite_mysql_information_schema_schemata) - near "STRICT": syntax error in C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php:401
+Stack trace:
+#0 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php(401): PDO->query('CREATE TABLE IF...')
+#1 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-db.php(348): WP_SQLite_Translator->__construct(Object(PDO))
+#2 C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php(772): WP_SQLite_DB->db_connect()
+#3 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-db.php(55): wpdb->__construct('', '', 'Marcel_Wallace', '')
+#4 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\db.php(84): WP_SQLite_DB->__construct('Marcel_Wallace')
+#5 C:\Users\hents\Studio\httpscreateyolide\wp-content\db.php(37): require_once('C:\\Users\\hents\\...')
+#6 C:\Users\hents\Studio\httpscreateyolide\wp-includes\load.php(712): require_once('C:\\Users\\hents\\...')
+#7 C:\Users\hents\Studio\httpscreateyolide\wp-settings.php(136): require_wp_db()
+#8 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Runner.php(1374): require('C:\\Users\\hents\\...')
+#9 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Runner.php(1293): WP_CLI\Runner->load_wordpress()
+#10 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Bootstrap/LaunchRunner.php(28): WP_CLI\Runner->start()
+#11 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/bootstrap.php(84): WP_CLI\Bootstrap\LaunchRunner->process(Object(WP_CLI\Bootstrap\BootstrapState))
+#12 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/wp-cli.php(35): WP_CLI\bootstrap()
+#13 phar://C:/Users/hents/containing/wp-cli.phar/php/boot-phar.php(20): include('phar://C:/Users...')
+#14 C:\Users\hents\containing\wp-cli.phar(4): include('phar://C:/Users...')
+#15 {main}
+  thrown in C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php on line 401
+[01-Dec-2025 01:55:58 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 11 malformed database schema (_wp_sqlite_mysql_information_schema_schemata) - near "STRICT": syntax error in C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php:401
+Stack trace:
+#0 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php(401): PDO->query('CREATE TABLE IF...')
+#1 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-db.php(348): WP_SQLite_Translator->__construct(Object(PDO))
+#2 C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php(772): WP_SQLite_DB->db_connect()
+#3 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-db.php(55): wpdb->__construct('', '', 'Marcel_Wallace', '')
+#4 C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\db.php(84): WP_SQLite_DB->__construct('Marcel_Wallace')
+#5 C:\Users\hents\Studio\httpscreateyolide\wp-content\db.php(37): require_once('C:\\Users\\hents\\...')
+#6 C:\Users\hents\Studio\httpscreateyolide\wp-includes\load.php(712): require_once('C:\\Users\\hents\\...')
+#7 C:\Users\hents\Studio\httpscreateyolide\wp-settings.php(136): require_wp_db()
+#8 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Runner.php(1374): require('C:\\Users\\hents\\...')
+#9 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Runner.php(1293): WP_CLI\Runner->load_wordpress()
+#10 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/WP_CLI/Bootstrap/LaunchRunner.php(28): WP_CLI\Runner->start()
+#11 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/bootstrap.php(84): WP_CLI\Bootstrap\LaunchRunner->process(Object(WP_CLI\Bootstrap\BootstrapState))
+#12 phar://C:/Users/hents/containing/wp-cli.phar/vendor/wp-cli/wp-cli/php/wp-cli.php(35): WP_CLI\bootstrap()
+#13 phar://C:/Users/hents/containing/wp-cli.phar/php/boot-phar.php(20): include('phar://C:/Users...')
+#14 C:\Users\hents\containing\wp-cli.phar(4): include('phar://C:/Users...')
+#15 {main}
+  thrown in C:\Users\hents\Studio\httpscreateyolide\wp-content\mu-plugins\sqlite-database-integration\wp-includes\sqlite\class-wp-sqlite-translator.php on line 401
+[01-Dec-2025 01:57:39 UTC] PHP Warning:  mysqli_real_connect(): php_network_getaddresses: getaddrinfo for DB_Host failed: Der angegebene Host ist unbekannt.  in C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php on line 1994
+[01-Dec-2025 01:57:39 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): php_network_getaddresses: getaddrinfo for DB_Host failed: Der angegebene Host ist unbekannt.  in C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php on line 1994
+[01-Dec-2025 01:58:00 UTC] PHP Warning:  mysqli_real_connect(): php_network_getaddresses: getaddrinfo for DB_Host failed: Der angegebene Host ist unbekannt.  in C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php on line 1994
+[01-Dec-2025 01:58:00 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): php_network_getaddresses: getaddrinfo for DB_Host failed: Der angegebene Host ist unbekannt.  in C:\Users\hents\Studio\httpscreateyolide\wp-includes\class-wpdb.php on line 1994
