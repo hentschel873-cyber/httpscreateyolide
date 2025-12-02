@@ -8,9 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Resolve plugin relative to this mu-plugins directory (works with Studio installs)
-$plugin = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'local-sync' . DIRECTORY_SEPARATOR . 'local-sync.php';
-if ( file_exists( $plugin ) ) {
-    require_once $plugin;
+// Use __DIR__ + realpath to canonicalize the path and avoid dirname(__FILE__) noise
+$plugin_path = realpath( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'local-sync' . DIRECTORY_SEPARATOR . 'local-sync.php' );
+if ( $plugin_path && file_exists( $plugin_path ) ) {
+    require_once $plugin_path;
 }
 
 // REST Pre-Dispatch-Prüfer für den Local-Sync-Endpunkt.
@@ -44,8 +45,31 @@ if ( ! function_exists( 'localSyncVerifyToken' ) ) {
         $error = null;
         $auth   = localSyncGetAuthHeader();
 
-        // Client-IP bestimmen (falls verfügbar)
+        // Client-IP bestimmen (falls verfügbar).
+        // Wenn die Umgebung hinter einem Proxy läuft und `WP_LOCAL_SYNC_TRUST_PROXY` gesetzt ist,
+        // versuchen wir, `X-Forwarded-For` zu verwenden (erste Eintragung).
         $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+        $trust_proxy = getenv( 'WP_LOCAL_SYNC_TRUST_PROXY' );
+        if ( ! $trust_proxy && defined( 'WP_LOCAL_SYNC_TRUST_PROXY' ) ) {
+            $trust_proxy = WP_LOCAL_SYNC_TRUST_PROXY;
+        }
+        if ( $trust_proxy ) {
+            $xff = null;
+            if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+                $xff = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } elseif ( function_exists( 'getallheaders' ) ) {
+                $h = getallheaders();
+                if ( isset( $h['X-Forwarded-For'] ) ) { $xff = $h['X-Forwarded-For']; }
+                elseif ( isset( $h['x-forwarded-for'] ) ) { $xff = $h['x-forwarded-for']; }
+            }
+            if ( $xff ) {
+                // X-Forwarded-For kann eine kommagetrennte Liste sein; erste IP ist der Client.
+                $parts = array_map( 'trim', explode( ',', $xff ) );
+                if ( ! empty( $parts ) && filter_var( $parts[0], FILTER_VALIDATE_IP ) ) {
+                    $ip = $parts[0];
+                }
+            }
+        }
 
         // Optionale IP-Whitelist: Kommagetrennte Liste (z.B. "127.0.0.1,192.0.2.0/24").
         // Wenn gesetzt, werden nur Anfragen von erlaubten IPs weiter geprüft.
