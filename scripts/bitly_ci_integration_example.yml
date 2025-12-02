@@ -1,0 +1,26 @@
+# Example GitHub Actions snippet: shorten a URL using Bitly and set as step output
+# Requires repository secret: BITLY_TOKEN
+name: bitly-shortener-example
+on: [workflow_dispatch]
+
+jobs:
+  shorten:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Shorten URL with curl
+        id: shorten
+        env:
+          BITLY_TOKEN: ${{ secrets.BITLY_TOKEN }}
+        run: |
+          URL="https://example.com/very/long/url"
+          RESP=$(curl -s -X POST "https://api-ssl.bitly.com/v4/shorten" \
+            -H "Authorization: Bearer $BITLY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"long_url\":\"$URL\"}")
+          echo "resp=$RESP"
+          SHORT=$(echo "$RESP" | jq -r '.link')
+          echo "short_url=$SHORT"
+          echo "short_url=$SHORT" >> $GITHUB_OUTPUT
+      - name: Use short url
+        run: |
+          echo "Short URL from previous step: ${{ steps.shorten.outputs.short_url }}"

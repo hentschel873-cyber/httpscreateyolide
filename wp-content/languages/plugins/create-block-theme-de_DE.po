@@ -1,0 +1,94 @@
+# Translation of Plugins - Create Block Theme - Stable (latest release) in German
+# This file is distributed under the same license as the Plugins - Create Block Theme - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-08-04 11:58:57+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: de\n"
+"Project-Id-Version: Plugins - Create Block Theme - Stable (latest release)\n"
+
+#: includes/class-create-block-theme-api.php:261
+msgid "Theme Variation Created."
+msgstr "Theme-Variation angelegt."
+
+#: includes/class-create-block-theme-api.php:236
+msgid "Child Theme Created."
+msgstr "Child-Theme erstellt."
+
+#: includes/create-theme/theme-json.php:20
+msgid "Variation already exists."
+msgstr "Die Variante ist bereits vorhanden."
+
+#: includes/create-theme/theme-tags.php:67
+msgid "Custom Tags"
+msgstr "Individuelle Schlagwörter"
+
+#: includes/create-theme/theme-tags.php:47
+msgid "read more"
+msgstr "weiterlesen"
+
+#: includes/create-theme/theme-tags.php:69
+msgid "custom, tags, custom-tags"
+msgstr "individuell, Schlagwörter, individuelle-Schlagwörter"
+
+#: includes/create-theme/theme-tags.php:72
+msgid "Add custom tags (single or hyphenated words, separated by commas)"
+msgstr "Füge individuelle Schlagwörter hinzu (einzelne Wörter oder Wörter mit Bindestrich, durch Komma getrennt)"
+
+#: includes/create-theme/theme-tags.php:87
+msgid "(max 3 tags)"
+msgstr "(max. 3 Schlagwörter)"
+
+#: includes/create-theme/theme-tags.php:47 build/plugin-sidebar.js:10
+msgid "https://make.wordpress.org/themes/handbook/review/required/theme-tags/"
+msgstr "https://make.wordpress.org/themes/handbook/review/required/theme-tags/"
+
+#. Translators: Theme Tags link.
+#: includes/create-theme/theme-tags.php:43
+msgid "Add theme tags to help categorize the theme (%s)."
+msgstr "Füge Theme-Schlagwörter hinzu, um das Theme zu kategorisieren (%s)."
+
+#: includes/create-theme/theme-tags.php:37
+msgid "Theme Tags"
+msgstr "Theme-Schlagwörter"
+
+#. Plugin URI of the plugin
+#: create-block-theme.php
+msgid "https://wordpress.org/plugins/create-block-theme"
+msgstr "https://de.wordpress.org/plugins/create-block-theme"
+
+#: includes/class-create-block-theme-admin-landing.php:22
+#: build/plugin-sidebar.js:11
+msgctxt "UI String"
+msgid "Create Block Theme"
+msgstr "Block-Theme erstellen"
+
+#: assets/boilerplate/theme.json
+msgctxt "Font family name"
+msgid "System Font"
+msgstr "System-Schrift"
+
+#. Author URI of the plugin
+#: create-block-theme.php build/plugin-sidebar.js:1 build/plugin-sidebar.js:10
+msgid "https://wordpress.org/"
+msgstr "https://de.wordpress.org/"
+
+#. Author of the plugin
+#: create-block-theme.php
+msgid "WordPress.org"
+msgstr "WordPress.org"
+
+#. Description of the plugin
+#: create-block-theme.php
+msgid "Generates a block theme"
+msgstr "Erstellt ein Block-Theme"
+
+#. Plugin Name of the plugin
+#: create-block-theme.php build/admin-landing-page.js:1
+#: build/plugin-sidebar.js:11
+msgid "Create Block Theme"
+msgstr "Create Block Theme"
