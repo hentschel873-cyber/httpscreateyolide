@@ -67,7 +67,7 @@ jobs:
     name: Test Local Sync Configuration
     runs-on: ubuntu-latest
     needs: [secret-scan, php-syntax]
-    
+
     # Define environment variables for this job
     # In a real workflow, use GitHub Secrets instead of hardcoded values
     env:
@@ -78,7 +78,7 @@ jobs:
       WP_LOCAL_SYNC_RATE_LIMIT: "120"
       WP_LOCAL_SYNC_TRUST_PROXY: "0"
       WP_LOCAL_SYNC_DEBUG: "1"
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -93,7 +93,7 @@ jobs:
       - name: Validate environment variables are set
         run: |
           echo "Checking required environment variables..."
-          
+
           if [ -z "$WP_LOCAL_SYNC_SECRET" ]; then
             echo "❌ ERROR: WP_LOCAL_SYNC_SECRET is not set!"
             echo "Please add it as a repository secret:"
@@ -105,7 +105,7 @@ jobs:
           else
             echo "✅ WP_LOCAL_SYNC_SECRET is set (length: ${#WP_LOCAL_SYNC_SECRET})"
           fi
-          
+
           echo "✅ WP_LOCAL_SYNC_WHITELIST: ${WP_LOCAL_SYNC_WHITELIST:-not set}"
           echo "✅ WP_LOCAL_SYNC_RATE_LIMIT: ${WP_LOCAL_SYNC_RATE_LIMIT:-60 (default)}"
           echo "✅ WP_LOCAL_SYNC_TRUST_PROXY: ${WP_LOCAL_SYNC_TRUST_PROXY:-0 (default)}"
@@ -128,7 +128,7 @@ jobs:
   #   name: Integration Test
   #   runs-on: ubuntu-latest
   #   needs: test-local-sync
-  #   
+  #
   #   services:
   #     mysql:
   #       image: mysql:8.0
@@ -138,14 +138,14 @@ jobs:
   #       ports:
   #         - 3306:3306
   #       options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-  #   
+  #
   #   env:
   #     WP_LOCAL_SYNC_SECRET: ${{ secrets.WP_LOCAL_SYNC_SECRET }}
-  #   
+  #
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v4
-  #     
+  #
   #     - name: Setup WordPress
   #       run: |
   #         # Install WordPress, configure, and test the endpoint
