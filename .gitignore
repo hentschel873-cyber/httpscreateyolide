@@ -1,7 +1,13 @@
 # Ignore local wp-config with secrets
 wp-config.php
+wp-config.php.bak*
+wp-config.php.backup*
+wp-config.php.autobak*
+wp-config.php.copilot_backup*
 
 # Ignore local env files
 .env
 .env.local
+
+# Ignore secret scan reports
 scripts/deep_secret_scan_report.txt
