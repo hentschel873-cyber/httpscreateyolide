@@ -1,0 +1,187 @@
+name: Local Sync CI - Example Workflow
+# Example GitHub Actions workflow demonstrating how to use WP_LOCAL_SYNC_SECRET
+# and other environment variables in CI/CD pipelines
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Job 1: Secret Scanning (recommended to run first)
+  secret-scan:
+    name: Scan for Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PowerShell (if needed)
+        run: |
+          if ! command -v pwsh &> /dev/null; then
+            echo "PowerShell not found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y powershell
+          fi
+
+      - name: Run secret scanner
+        run: |
+          pwsh -File scripts/scan_secrets.ps1
+        continue-on-error: true
+
+      - name: Upload scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secret-scan-report
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 30
+
+  # Job 2: PHP Syntax Check
+  php-syntax:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Validate local-sync-loader.php syntax
+        run: |
+          php -l wp-content/mu-plugins/local-sync-loader.php
+
+  # Job 3: Test Local Sync Configuration
+  test-local-sync:
+    name: Test Local Sync Configuration
+    runs-on: ubuntu-latest
+    needs: [secret-scan, php-syntax]
+
+    # Define environment variables for this job
+    # In a real workflow, use GitHub Secrets instead of hardcoded values
+    env:
+      # IMPORTANT: In production, set these as repository secrets!
+      # Settings > Secrets and variables > Actions > New repository secret
+      WP_LOCAL_SYNC_SECRET: ${{ secrets.WP_LOCAL_SYNC_SECRET }}
+      WP_LOCAL_SYNC_WHITELIST: "127.0.0.1,::1"
+      WP_LOCAL_SYNC_RATE_LIMIT: "120"
+      WP_LOCAL_SYNC_TRUST_PROXY: "0"
+      WP_LOCAL_SYNC_DEBUG: "1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, json
+          coverage: none
+
+      - name: Validate environment variables are set
+        run: |
+          echo "Checking required environment variables..."
+
+          if [ -z "$WP_LOCAL_SYNC_SECRET" ]; then
+            echo "❌ ERROR: WP_LOCAL_SYNC_SECRET is not set!"
+            echo "Please add it as a repository secret:"
+            echo "1. Go to Settings > Secrets and variables > Actions"
+            echo "2. Click 'New repository secret'"
+            echo "3. Name: WP_LOCAL_SYNC_SECRET"
+            echo "4. Value: (generate with: openssl rand -base64 32)"
+            exit 1
+          else
+            echo "✅ WP_LOCAL_SYNC_SECRET is set (length: ${#WP_LOCAL_SYNC_SECRET})"
+          fi
+
+          echo "✅ WP_LOCAL_SYNC_WHITELIST: ${WP_LOCAL_SYNC_WHITELIST:-not set}"
+          echo "✅ WP_LOCAL_SYNC_RATE_LIMIT: ${WP_LOCAL_SYNC_RATE_LIMIT:-60 (default)}"
+          echo "✅ WP_LOCAL_SYNC_TRUST_PROXY: ${WP_LOCAL_SYNC_TRUST_PROXY:-0 (default)}"
+          echo "✅ WP_LOCAL_SYNC_DEBUG: ${WP_LOCAL_SYNC_DEBUG:-0 (default)}"
+
+      - name: PHP Configuration Check
+        run: |
+          php -r "
+          echo 'PHP Environment Variables Check:\n';
+          echo 'WP_LOCAL_SYNC_SECRET: ' . (getenv('WP_LOCAL_SYNC_SECRET') ? 'SET (****)' : 'NOT SET') . \"\n\";
+          echo 'WP_LOCAL_SYNC_WHITELIST: ' . (getenv('WP_LOCAL_SYNC_WHITELIST') ?: 'not set') . \"\n\";
+          echo 'WP_LOCAL_SYNC_RATE_LIMIT: ' . (getenv('WP_LOCAL_SYNC_RATE_LIMIT') ?: 'not set') . \"\n\";
+          echo 'WP_LOCAL_SYNC_TRUST_PROXY: ' . (getenv('WP_LOCAL_SYNC_TRUST_PROXY') ?: 'not set') . \"\n\";
+          echo 'WP_LOCAL_SYNC_DEBUG: ' . (getenv('WP_LOCAL_SYNC_DEBUG') ?: 'not set') . \"\n\";
+          "
+
+  # Job 4: Integration Test (optional - requires WordPress setup)
+  # Uncomment and customize if you want to test the actual endpoint
+  # integration-test:
+  #   name: Integration Test
+  #   runs-on: ubuntu-latest
+  #   needs: test-local-sync
+  #
+  #   services:
+  #     mysql:
+  #       image: mysql:8.0
+  #       env:
+  #         MYSQL_ROOT_PASSWORD: root
+  #         MYSQL_DATABASE: wordpress_test
+  #       ports:
+  #         - 3306:3306
+  #       options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+  #
+  #   env:
+  #     WP_LOCAL_SYNC_SECRET: ${{ secrets.WP_LOCAL_SYNC_SECRET }}
+  #
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup WordPress
+  #       run: |
+  #         # Install WordPress, configure, and test the endpoint
+  #         # Add your WordPress setup and testing logic here
+  #         echo "WordPress integration test would run here"
+
+# ==============================================================================
+# IMPORTANT SECURITY NOTES
+# ==============================================================================
+#
+# 1. NEVER commit secrets directly in this file!
+#    Always use GitHub Secrets: Settings > Secrets and variables > Actions
+#
+# 2. To add WP_LOCAL_SYNC_SECRET as a repository secret:
+#    a. Generate a secure token:
+#       openssl rand -base64 32
+#    b. Go to your repository settings
+#    c. Navigate to: Secrets and variables > Actions
+#    d. Click "New repository secret"
+#    e. Name: WP_LOCAL_SYNC_SECRET
+#    f. Value: (paste the generated token)
+#
+# 3. For organization-level secrets (shared across repos):
+#    - Go to Organization settings > Secrets and variables > Actions
+#    - Create organization secret
+#    - Grant access to selected repositories
+#
+# 4. Environment-specific secrets:
+#    - Use GitHub Environments for dev/staging/prod
+#    - Each environment can have its own secrets
+#    - Settings > Environments > New environment
+#
+# 5. Secret rotation:
+#    - Rotate secrets regularly (e.g., every 90 days)
+#    - Update both GitHub Secrets and local/production configurations
+#    - Monitor audit logs for unauthorized access
+#
+# ==============================================================================
