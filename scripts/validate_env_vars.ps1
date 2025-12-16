@@ -106,15 +106,16 @@ Test-EnvVar -VarName "WP_LOCAL_SYNC_WHITELIST" -Required $false `
                 }
                 $subnet = $parts[0]
                 $mask = $parts[1]
-                if (-not ($subnet -match '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$')) {
+                # Validate IPv4 with octet range 0-255
+                if (-not ($subnet -match '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')) {
                     return "Invalid subnet IP: $subnet"
                 }
                 if (-not ($mask -match '^\d+$') -or [int]$mask -lt 0 -or [int]$mask -gt 32) {
                     return "Invalid CIDR mask: $mask (must be 0-32)"
                 }
             } else {
-                # Single IP
-                if (-not ($ip -match '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$') -and $ip -ne '::1') {
+                # Single IP - validate IPv4 with octet range 0-255 or IPv6 localhost
+                if (-not ($ip -match '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$') -and $ip -ne '::1') {
                     return "Invalid IP address: $ip"
                 }
             }
